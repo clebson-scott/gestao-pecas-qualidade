@@ -2,8 +2,8 @@
 
 [![CI](https://github.com/clebson-scott/gestao-pecas-qualidade/actions/workflows/ci.yml/badge.svg)](https://github.com/clebson-scott/gestao-pecas-qualidade/actions/workflows/ci.yml)
 ![Python](https://img.shields.io/badge/python-3.10%20%7C%203.11%20%7C%203.12-blue)
-![Testes](https://img.shields.io/badge/testes-51%20passed-brightgreen)
-![Cobertura](https://img.shields.io/badge/cobertura-97%25-brightgreen)
+![Testes](https://img.shields.io/badge/testes-54%20passed-brightgreen)
+![Cobertura](https://img.shields.io/badge/cobertura-98%25-brightgreen)
 ![mypy](https://img.shields.io/badge/mypy-0%20erros-success)
 ![ruff](https://img.shields.io/badge/ruff-0%20viola%C3%A7%C3%B5es-success)
 ![Dependências externas](https://img.shields.io/badge/depend%C3%AAncias%20externas-zero-informational)
@@ -272,8 +272,8 @@ O relatório é **exportado automaticamente** para `relatorio_final.txt` —
 
 ## 🧪 Testes automatizados
 
-O sistema tem **51 testes automatizados** (`pytest`) com **cobertura de
-97%** do código, em três famílias:
+O sistema tem **54 testes automatizados** (`pytest`) com **cobertura de
+98%** do código, em três famílias:
 
 1. **Unitários** (`test_regras.py`, 10 testes): cada critério de qualidade
    isolado, incluindo os limites exatos (95g, 105g, 10cm, 20cm) e a
@@ -282,7 +282,7 @@ O sistema tem **51 testes automatizados** (`pytest`) com **cobertura de
 2. **De integração do CLI** (`test_cli.py`, 23 testes): simulam sessões
    completas de usuário — sequências de teclado reais alimentando o menu,
    verificando as mensagens impressas. Se o menu quebrar, o teste pega.
-3. **De robustez** (`test_robustez.py`, 18 testes): invariantes de caixa
+3. **De robustez** (`test_robustez.py`, 18 testes + 3 smoke tests da demo em `test_demo.py`): invariantes de caixa
    (fechada é imutável), arquivo de estado corrompido, caminho de disco
    inválido — o sistema continua operando em vez de quebrar.
 
@@ -295,7 +295,7 @@ pytest tests/ -v
 
 ```bash
 pytest tests/ -v
-# 51 passed — cobertura: 97,15%
+# 54 passed — cobertura: 98,12%
 ```
 
 Além dos testes, o repositório tem um **portão de qualidade** que precisa
@@ -309,8 +309,8 @@ make qualidade   # ruff (estilo + padrões de bug) → mypy (tipagem) → pytest
 |------------------------------|------------|---------|
 | Estilo e padrões de bug      | `ruff`     | 0 violações |
 | Tipagem estática              | `mypy`     | 0 erros |
-| Testes automatizados          | `pytest`   | 51/51   |
-| Cobertura mínima exigida       | `coverage` | 95% (atual: 97%) |
+| Testes automatizados          | `pytest`   | 54/54   |
+| Cobertura mínima exigida       | `coverage` | 95% (atual: 98%) |
 
 Um workflow de **Integração Contínua** (`.github/workflows/ci.yml`) roda
 essa suíte automaticamente em Python 3.10, 3.11 e 3.12 a cada `push` —
@@ -410,7 +410,8 @@ gestao-pecas-qualidade/
 │   ├── test_regras.py     # 10 testes — critérios de qualidade isolados
 │   ├── test_estoque.py     # 11 testes — núcleo de negócio (caixas, remoção, relatório)
 │   ├── test_cli.py         # 23 testes — sessões completas de usuário simuladas
-│   └── test_robustez.py    # 18 testes — invariantes, corrompimentos, caminhos de erro
+│   ├── test_robustez.py    # 18 testes — invariantes, corrompimentos, caminhos de erro
+│   └── test_demo.py       # 3 testes — smoke tests da demonstração automática
 ├── .github/workflows/
 │   └── ci.yml              # Portão de qualidade: ruff → mypy → pytest (3 versões de Python)
 ├── pecas_qualidade/demo.py # Demonstração automática (cenario completo sem digitação)

@@ -97,7 +97,7 @@ def rodar_demo(arquivo_estado: Path | None = None) -> None:
     print("Demonstração concluída com sucesso.")
 
 
-def main() -> int:
+def main() -> int:  # pragma: no cover — ponto de entrada CLI
     parser = argparse.ArgumentParser(
         description="Demonstração automática do sistema de Gestão de Peças e Qualidade."
     )
@@ -112,5 +112,5 @@ def main() -> int:
     return 0
 
 
-if __name__ == "__main__":
+if __name__ == "__main__":  # pragma: no cover — ponto de entrada
     sys.exit(main())

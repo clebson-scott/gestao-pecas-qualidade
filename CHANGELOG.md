@@ -10,7 +10,8 @@ e o projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 ### Adicionado
 - **Suite de testes de integração do CLI** (`tests/test_cli.py`): 17 testes
   que simulam sessões completas de usuário (digitação, mensagens de erro,
-  relatório exportado), elevando a cobertura total para **97,15%**.
+  relatório exportado), elevando a cobertura total para **98,12%** (com 3 smoke tests da
+  própria demo em `tests/test_demo.py`).
 - **Testes de robustez** (`tests/test_robustez.py`): invariantes de
   `Caixa` (imutabilidade, capacidade), serialização/desserialização de
   `Peca`, e recuperação de arquivos de estado corrompidos ou inexistentes.
@@ -34,8 +35,9 @@ e o projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR/).
   `ruff check --fix` (estilo uniforme, 100% limpo no linter).
 
 ### Qualidade (portão de entrada do CI)
-- **51 testes automatizados** (eram 21), todos passando.
+- **54 testes automatizados** (eram 21), todos passando.
 - **Cobertura: 97,15%** (era 56% antes dos testes de integração).
+- `pytest-cov` adicionado ao `requirements.txt` (o CI mede cobertura).
 - `mypy` com `disallow_untyped_defs`, `disallow_incomplete_defs` e
   `check_untyped_defs`: **zero erros de tipagem** no pacote inteiro.
 - `ruff` (pycodestyle, pyflakes, isort, bugbear, pyupgrade, simplify):
