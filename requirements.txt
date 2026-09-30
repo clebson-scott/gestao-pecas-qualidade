@@ -4,5 +4,7 @@
 # instalação para o avaliador e para qualquer fábrica que queira rodar o
 # protótipo sem depender de um ambiente de pacotes externos.
 #
-# Dependência de DESENVOLVIMENTO (só para rodar a suíte de testes):
+# Dependências de DESENVOLVIMENTO (só para rodar os testes e o portão
+# de qualidade — nunca necessárias para executar o sistema):
 pytest>=7.4
+pytest-cov>=4.1
