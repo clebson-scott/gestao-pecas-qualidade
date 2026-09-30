@@ -1,130 +1,135 @@
-# 🎬 Roteiro do Vídeo Pitch (até 4 minutos)
+# 🎬 Roteiro do Vídeo Pitch — versão curta (2min30s)
 
-> O desafio exige um vídeo com **você** apresentando a solução — é uma
-> exigência de autoria pessoal (a própria orientação diz "grave um vídeo
-> apresentando SUA solução"). Por isso este roteiro é um **teleprompter
-> pronto**, cronometrado e testado quanto ao tempo de fala, para você
-> gravar com sua própria voz. Eu não posso gravar esse vídeo por você —
-> isso precisa ser você falando, é parte do que está sendo avaliado.
+> **Por que essa versão:** roteiro enxuto para não estourar os 4 minutos.
+> Fala total: ~300 palavras. Com pausas naturais, dá 2min20s a 2min40s —
+> sobra margem de segurança.
 >
-> **Ferramenta sugerida para gravar:** [Loom](https://www.loom.com) (grava
-> tela + câmera/voz simultaneamente e já gera link público em segundos —
-> aceito pela orientação) ou OBS Studio + upload não-listado no YouTube.
+> **Roteiro adaptado (PCD auditivo):** as legendas na tela carregam metade
+> da apresentação. Se em algum trecho você preferir não falar, deixe a
+> legenda sozinha na tela por 3 segundos — o conteúdo continua completo.
+> Ferramentas com legenda automática em português: **Loom** (legenda nativa),
+> **CapCut** (PC, gratuito) ou **YouTube** (upload e correção manual).
+>
+> **Regra de ouro:** legendas SEMPRE ligadas. Elas garantem que a banca
+> entenda tudo, servem de apoio pra você, e mostram cuidado com
+> acessibilidade — ninguém vai tirar nota por isso, pelo contrário.
 
 ---
 
-## Preparação (antes de gravar)
+## Preparação (5 minutos, antes de gravar)
 
-1. Abra dois terminais lado a lado (ou uma tela cheia): um para mostrar o
-   código no editor, outro para rodar `python3 -m pecas_qualidade.main`.
-2. Deixe os testes já rodados numa aba (`pytest tests/ -v`) para mostrar
-   o resultado verde rapidamente, sem precisar esperar a execução ao vivo.
-3. Tenha pronto um cadastro de pelo menos 12 peças (10 aprovadas + 2 pra
-   forçar a abertura da 2ª caixa) e 2-3 reprovadas — assim a demonstração
-   ao vivo mostra o fechamento automático de caixa e os motivos de
-   reprovação sem precisar digitar 20 peças na hora.
+1. Dois terminais abertos, lado a lado:
+   - Esquerda: no VS Code, arquivo `pecas_qualidade/regras.py` visível.
+   - Direita: pronto pra digitar `make demo`.
+2. Já ter rodado `pytest tests/ -q` uma vez (para o estado existir — a demo
+   usa arquivo temporário, então não precisa).
+3. Legenda automática LIGADA na ferramenta de gravação.
+4. Fale 10% mais devagar do que o normal. Vídeo curto dá esse luxo.
 
 ---
 
-## Roteiro cronometrado (~3min50s de fala, com folga para os 4 minutos)
+## Roteiro cronometrado
 
-### 0:00 – 0:25 | Abertura + problema (25s)
+### 0:00 – 0:20 | Abertura + problema (legenda: seu nome + disciplina)
 
-> "Oi, eu sou o Clebson Scott, e esse é o meu trabalho de Algoritmos e
-> Lógica de Programação: um sistema de gestão de peças, qualidade e
-> armazenamento para uma linha de montagem industrial.
+> "Oi, eu sou Clebson Scott. Este é meu trabalho de Algoritmos e Lógica
+> de Programação: um sistema de gestão de peças, qualidade e
+> armazenamento pra linha de montagem industrial.
 >
-> O problema que resolvi é bem concreto: hoje, numa fábrica que inspeciona
-> peças manualmente — com régua, balança e o olho do operador — cada
-> julgamento humano varia. Isso gera atraso, erro de conferência e custo
-> de operação mais alto do que precisa ser."
+> O problema: inspeção manual com régua e balança varia de operador pra
+> operador. Gera erro, atraso e custo."
 
-### 0:25 – 1:10 | Como estruturei a lógica (45s)
+*(13 segundos de fala. Legenda na tela: "Inspeção manual → erro, atraso,
+custo".)*
 
-> "Pra resolver isso, dividi o problema em três partes lógicas.
+### 0:20 – 0:50 | A lógica em 3 partes (legenda: 1, 2, 3 na tela)
+
+> "Dividi a lógica em três partes.
 >
-> Primeiro, a avaliação: cada peça entra com id, peso, cor e comprimento,
-> e passa por três verificações independentes — peso entre 95 e 105
-> gramas, cor azul ou verde, comprimento entre 10 e 20 centímetros. E um
-> detalhe importante: eu testo as três condições sempre, não paro na
-> primeira que falhar — assim, se uma peça falha em peso E em cor, o
-> relatório mostra os dois motivos, não só o primeiro.
+> Primeira: avaliação. Cada peça passa por três checagens — peso entre
+> 95 e 105 gramas, cor azul ou verde, comprimento entre 10 e 20
+> centímetros. Testo as três sempre: a peça reprovada recebe TODOS os
+> motivos, não só o primeiro.
 >
-> Segundo, o armazenamento: toda peça aprovada entra numa caixa de até 10
-> peças. Quando a caixa enche, ela fecha automaticamente e uma nova caixa
-> abre — e eu decidi que uma caixa fechada é imutável, ninguém consegue
-> adicionar ou remover peça dela depois, exatamente como um lote lacrado
-> numa fábrica real.
+> Segunda: armazenamento. Aprovada entra numa caixa de até 10 peças. Caixa
+> cheia fecha sozinha e fica imutável — como lote lacrado.
 >
-> Terceiro, o relatório: a qualquer momento, o sistema consolida total de
-> aprovadas, total de reprovadas com o motivo de cada uma, e quantas
-> caixas foram usadas."
+> Terceira: relatório consolidado, com motivos de reprovação e uso das
+> caixas."
 
-### 1:10 – 1:35 | Técnicas e boas práticas (25s)
+*(30 segundos. Na tela, mostre `regras.py` no editor enquanto fala.)*
 
-> "Do lado técnico, usei algumas práticas que acho que valem destacar: o
-> código está separado em módulos — regras de negócio, modelos de dados,
-> orquestração e interface — cada um com uma responsabilidade só. Isso
-> facilita testar e facilita evoluir depois.
+### 0:50 – 1:05 | Boas práticas (legenda: os números)
+
+> "No código: módulos separados por responsabilidade, tipagem estática,
+> e 54 testes automatizados com cobertura de 98 por cento. A integração
+> contínua roda tudo a cada alteração."
+
+*(15 segundos. Se quiser, encaixe 2 segundos do terminal com
+`54 passed` na tela — opcional.)*
+
+### 1:05 – 2:00 | Demonstração (legenda: o que a tela mostra)
+
+> "Agora, o sistema rodando. Preparei uma demonstração automática com 15
+> peças."
+
+*(Digite `make demo` e ESPERE em silêncio — a demo se auto-explica na
+tela, é proposital. Apenas aponte com o mouse enquanto ela roda.)*
+
+*(Na seção [3/4] da demo, a tentativa de remoção na caixa fechada:)*
+
+> "Regra de negócio viva: caixa fechada é imutável. O sistema bloqueia."
+
+*(No relatório final da demo, 3 segundos de silêncio com a tela parada.)*
+
+> "Relatório consolidado: taxa de aprovação, cada motivo de reprovação,
+> caixas usadas."
+
+*(55 segundos no total — a tela trabalha, você fala só ~40 palavras.)*
+
+### 2:00 – 2:25 | Reflexão (legenda: "próximos passos")
+
+> "A função que aprova a peça recebe o número do teclado hoje — mas
+> poderia receber da balança digital ou sensor a laser, sem mudar uma
+> linha. É a separação entre regra de negócio e interface que permite
+> isso.
 >
-> E eu escrevi 21 testes automatizados com pytest, cobrindo até os casos
-> de borda, como o que acontece exatamente na 10ª e na 11ª peça aprovada."
+> Próximo passo natural: câmera com visão computacional pra identificar
+> a cor."
 
-*(Mostre rapidamente o terminal com `pytest tests/ -v` rodando e o
-resultado "21 passed" na tela — 5 a 8 segundos de tela, sem precisar
-narrar tudo.)*
+*(25 segundos.)*
 
-### 1:35 – 3:05 | Demonstração ao vivo (90s)
+### 2:25 – 2:30 | Encerramento (legenda: link do GitHub)
 
-> "Vamos ver funcionando."
+> "Código, testes e relatório técnico estão no GitHub, linkado na
+> entrega. Obrigado!"
 
-*(Rode `python3 -m pecas_qualidade.main` e narre enquanto navega:)*
-
-> "Esse é o menu principal. Vou cadastrar uma peça dentro do padrão:
-> 100 gramas, azul, 15 centímetros..."
-
-*(Mostre a aprovação e a peça entrando na Caixa #1.)*
-
-> "E agora uma fora do padrão, pra mostrar o motivo da reprovação..."
-
-*(Cadastre uma peça reprovada, mostre a mensagem com os motivos.)*
-
-> "Eu já tenho aqui um histórico de 10 peças aprovadas cadastradas antes
-> da gravação — vou cadastrar mais uma pra mostrar o fechamento
-> automático da caixa..."
-
-*(Cadastre a 11ª peça aprovada e mostre que ela abre a Caixa #2. Depois
-vá em "4. Listar caixas fechadas" pra mostrar a Caixa #1 fechada com 10
-peças.)*
-
-> "E por fim, o relatório final, com tudo consolidado."
-
-*(Escolha a opção "5. Gerar relatório final" e deixe a tela visível por
-alguns segundos.)*
-
-### 3:05 – 3:50 | Encerramento + reflexão (45s)
-
-> "Esse protótipo resolve o problema em escala de demonstração, mas ele
-> foi arquitetado pra crescer sem reescrever a lógica: a mesma função que
-> hoje decide se uma peça é aprovada, recebendo um número digitado no
-> teclado, poderia receber esse número direto de uma balança digital ou
-> de um sensor a laser — a regra de negócio não mudaria uma linha.
->
-> O próximo passo natural seria visão computacional pra identificar a
-> cor automaticamente por câmera, e um modelo simples de machine learning
-> olhando o histórico de reprovações pra prever, por exemplo, quando uma
-> ferramenta de corte está saindo de calibração — antes que ela gere um
-> lote inteiro fora do padrão.
->
-> O código completo, os testes e o relatório técnico estão no repositório
-> do GitHub, linkado na entrega. Obrigado!"
+*(5 segundos. Mostre a aba do repositório com o badge verde do CI.)*
 
 ---
 
 ## Checklist antes de enviar
 
-- [ ] Vídeo com no máximo 4 minutos
-- [ ] Mostra o problema, a lógica, as boas práticas e a demonstração ao vivo
-- [ ] Link público ou não-listado (Loom / YouTube / Drive / LinkedIn)
-- [ ] Link testado numa aba anônima do navegador antes de enviar (garante
-      que realmente está acessível sem login)
+- [ ] Vídeo entre 2min20s e 2min40s (limite do desafio: 4 min)
+- [ ] Legendas corretas (revisar o texto gerado automaticamente —
+      principalmente os números: 95, 105, 10, 20, 98%)
+- [ ] Os 4 blocos exigidos aparecem: problema, lógica, boas práticas,
+      demonstração ao vivo (a demo automática conta como demonstração —
+      mostra o sistema executando de ponta a ponta, com relatório)
+- [ ] Sua presença: nome falado e legenda na abertura (autoria)
+- [ ] Link público ou não-listado (Loom / YouTube / Drive)
+- [ ] Link testado numa aba anônima antes de enviar
+
+---
+
+## Plano B: se estourar o tempo na 1ª gravação
+
+Corte, nesta ordem, sem perder nota:
+1. A frase da integração contínua ("a integração contínua roda tudo")
+   — o badge verde na aba final já mostra isso.
+2. O detalhe "como lote lacrado" da parte de armazenamento.
+3. A pausa de 3 segundos do relatório (reduza pra 2).
+
+**Não corte nunca:** os três critérios numéricos (95/105, azul/verde,
+10/20), os motivos de reprovação completos, a imutabilidade da caixa
+fechada, e o encerramento com o GitHub. São os itens que a banca procura.
