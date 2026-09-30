@@ -82,7 +82,9 @@ def carregar_estado(
         pecas = {p["id"]: Peca.from_dict(p) for p in dados.get("pecas", [])}
         caixas = [Caixa.from_dict(c) for c in dados.get("caixas", [])]
         proximo_id_caixa = dados.get("proximo_id_caixa", (len(caixas) + 1))
-        logger.info("Estado carregado de %s (%d peças, %d caixas).", caminho, len(pecas), len(caixas))
+        logger.info(
+            "Estado carregado de %s (%d peças, %d caixas).", caminho, len(pecas), len(caixas)
+        )
         return pecas, caixas, proximo_id_caixa
     except (json.JSONDecodeError, KeyError, OSError) as erro:
         logger.warning(

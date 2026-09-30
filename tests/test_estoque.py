@@ -13,7 +13,6 @@ from pecas_qualidade.excecoes import (
     PecaNaoEncontradaError,
     RemocaoBloqueadaError,
 )
-from pecas_qualidade.models import StatusPeca
 
 
 @pytest.fixture
@@ -89,8 +88,10 @@ def test_remover_peca_inexistente_levanta_erro(gerenciador):
 
 def test_relatorio_final_totais_corretos(gerenciador):
     gerenciador.cadastrar_peca("P1", peso=100, cor="azul", comprimento=15)  # aprovada
-    gerenciador.cadastrar_peca("P2", peso=50, cor="preta", comprimento=5)   # reprovada (3 motivos)
-    gerenciador.cadastrar_peca("P3", peso=100, cor="vermelha", comprimento=15)  # reprovada (1 motivo)
+    gerenciador.cadastrar_peca("P2", peso=50, cor="preta", comprimento=5)  # reprovada (3 motivos)
+    gerenciador.cadastrar_peca(
+        "P3", peso=100, cor="vermelha", comprimento=15
+    )  # reprovada (1 motivo)
 
     relatorio = gerenciador.gerar_relatorio_final()
     assert relatorio.total_cadastradas == 3

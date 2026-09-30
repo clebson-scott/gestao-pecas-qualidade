@@ -23,10 +23,9 @@ Disciplina: Algoritmos e Lógica de Programação — UniFECAF
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field, asdict
+from dataclasses import asdict, dataclass, field
 from datetime import datetime
 from enum import Enum
-from typing import Optional
 
 
 class StatusPeca(str, Enum):
@@ -61,7 +60,7 @@ class CorPeca(str, Enum):
     LARANJA = "Laranja"
 
     @classmethod
-    def normalizar(cls, valor: str) -> "CorPeca":
+    def normalizar(cls, valor: str) -> CorPeca:
         """Converte uma string livre (com acentos, caixa alta/baixa) na
         cor equivalente do Enum.
 
@@ -89,9 +88,7 @@ class CorPeca(str, Enum):
         }
         if chave not in equivalencias:
             aceitas = ", ".join(sorted({e.value for e in equivalencias.values()}))
-            raise ValueError(
-                f"Cor '{valor}' não reconhecida. Cores aceitas: {aceitas}."
-            )
+            raise ValueError(f"Cor '{valor}' não reconhecida. Cores aceitas: {aceitas}.")
         return equivalencias[chave]
 
 
@@ -119,7 +116,7 @@ class Peca:
     comprimento: float
     status: StatusPeca = StatusPeca.REPROVADA
     motivos_reprovacao: list[str] = field(default_factory=list)
-    caixa_id: Optional[int] = None
+    caixa_id: int | None = None
     criada_em: str = field(default_factory=lambda: datetime.now().isoformat(timespec="seconds"))
 
     @property
@@ -135,7 +132,7 @@ class Peca:
         return dados
 
     @classmethod
-    def from_dict(cls, dados: dict) -> "Peca":
+    def from_dict(cls, dados: dict) -> Peca:
         """Reconstrói uma :class:`Peca` a partir de um dicionário (ex.: JSON)."""
         return cls(
             id=dados["id"],
@@ -184,7 +181,7 @@ class Caixa:
     capacidade_maxima: int = 10
     pecas_ids: list[str] = field(default_factory=list)
     fechada: bool = False
-    fechada_em: Optional[str] = None
+    fechada_em: str | None = None
 
     @property
     def ocupacao(self) -> int:
@@ -234,7 +231,7 @@ class Caixa:
         return asdict(self)
 
     @classmethod
-    def from_dict(cls, dados: dict) -> "Caixa":
+    def from_dict(cls, dados: dict) -> Caixa:
         """Reconstrói uma :class:`Caixa` a partir de um dicionário (ex.: JSON)."""
         return cls(
             id=dados["id"],

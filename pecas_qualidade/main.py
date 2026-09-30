@@ -24,7 +24,7 @@ from pathlib import Path
 
 # Permite executar tanto como módulo (`python -m pecas_qualidade.main`)
 # quanto diretamente (`python3 main.py`) de dentro da pasta do pacote.
-if __package__ in (None, ""):
+if __package__ in (None, ""):  # pragma: no cover — execução direta do arquivo
     sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
     from pecas_qualidade.estoque import GerenciadorProducao, RelatorioFinal
     from pecas_qualidade.excecoes import (
@@ -135,7 +135,9 @@ def acao_cadastrar_peca(gerenciador: GerenciadorProducao) -> None:
     comprimento = ler_float("Comprimento (cm): ", minimo=0)
 
     try:
-        peca = gerenciador.cadastrar_peca(id_peca=id_peca, peso=peso, cor=cor, comprimento=comprimento)
+        peca = gerenciador.cadastrar_peca(
+            id_peca=id_peca, peso=peso, cor=cor, comprimento=comprimento
+        )
     except PecaDuplicadaError as erro:
         print(f"  ✗ {erro}")
         return
@@ -213,12 +215,22 @@ def salvar_relatorio_em_arquivo(relatorio: RelatorioFinal, caminho: Path) -> Non
     caminho.write_text(str(relatorio) + "\n", encoding="utf-8")
 
 
-def executar() -> None:
+def executar(gerenciador: GerenciadorProducao | None = None) -> None:
+    """Executa o loop principal do menu.
+
+    Args:
+        gerenciador: instância de :class:`GerenciadorProducao` a operar.
+            Quando ``None`` (execução normal pelo usuário final), uma nova
+            instância é criada com persistência em disco habilitada. A
+            injeção explícita da instância é o que permite testar o menu
+            inteiro de ponta a ponta sem tocar no arquivo real de estado
+            (ver ``tests/test_cli.py``).
+    """
     print(TITULO_ARTE)
-    gerenciador = GerenciadorProducao()
+    if gerenciador is None:
+        gerenciador = GerenciadorProducao()
     print(
-        f"Estado carregado: {len(gerenciador.pecas)} peça(s), "
-        f"{len(gerenciador.caixas)} caixa(s)."
+        f"Estado carregado: {len(gerenciador.pecas)} peça(s), {len(gerenciador.caixas)} caixa(s)."
     )
 
     acoes = {
@@ -237,7 +249,7 @@ def executar() -> None:
 
         if opcao == "5":
             relatorio = acao_gerar_relatorio(gerenciador)
-            caminho_export = Path(__file__).resolve().parent / "relatorio_final.txt"
+            caminho_export = Path.cwd() / "relatorio_final.txt"
             salvar_relatorio_em_arquivo(relatorio, caminho_export)
             print(f"\n(Relatório também exportado para: {caminho_export})")
             pausar()
@@ -258,8 +270,8 @@ def executar() -> None:
         pausar()
 
 
-if __name__ == "__main__":
+if __name__ == "__main__":  # pragma: no cover — ponto de entrada
     try:
         executar()
-    except KeyboardInterrupt:
+    except KeyboardInterrupt:  # pragma: no cover — interrupção manual (Ctrl+C)
         print("\n\nInterrompido pelo usuário (Ctrl+C). Estado salvo em disco. Até logo!")

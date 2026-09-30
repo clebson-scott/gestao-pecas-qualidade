@@ -7,10 +7,39 @@ on:
     branches: [main]
 
 jobs:
+  lint:
+    name: Estilo e padrões de bug (ruff)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Instalar ruff
+        run: pip install ruff
+      - name: Verificar estilo e padrões de bug
+        run: |
+          ruff check pecas_qualidade tests scripts
+          ruff format --check pecas_qualidade tests
+
+  tipos:
+    name: Verificação estática de tipos (mypy)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Instalar dependências
+        run: pip install mypy types-requests || pip install mypy
+      - name: Verificar tipagem
+        run: mypy pecas_qualidade/
+
   testes:
-    name: Testes automatizados (pytest)
+    name: Testes (pytest) — Python ${{ matrix.python-version }}
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
         python-version: ["3.10", "3.11", "3.12"]
     steps:
@@ -25,8 +54,11 @@ jobs:
       - name: Instalar dependências
         run: pip install -r requirements.txt
 
-      - name: Rodar suíte de testes
-        run: pytest tests/ -v
+      - name: Rodar suíte de testes com cobertura
+        run: pytest tests/ -v --cov=pecas_qualidade --cov-report=term
 
-      - name: Verificar sintaxe/imports do CLI
-        run: python -c "import pecas_qualidade.main"
+      - name: Falhar se cobertura ficar abaixo de 95%
+        run: pytest tests/ --cov=pecas_qualidade --cov-fail-under=95 -q
+
+      - name: Smoke test — demonstração automática
+        run: python3 -m pecas_qualidade.demo

@@ -1,8 +1,11 @@
 # 🏭 Sistema de Gestão de Peças, Qualidade e Armazenamento
 
 [![CI](https://github.com/clebson-scott/gestao-pecas-qualidade/actions/workflows/ci.yml/badge.svg)](https://github.com/clebson-scott/gestao-pecas-qualidade/actions/workflows/ci.yml)
-![Python](https://img.shields.io/badge/python-3.10%2B-blue)
-![Testes](https://img.shields.io/badge/testes-21%20passed-brightgreen)
+![Python](https://img.shields.io/badge/python-3.10%20%7C%203.11%20%7C%203.12-blue)
+![Testes](https://img.shields.io/badge/testes-51%20passed-brightgreen)
+![Cobertura](https://img.shields.io/badge/cobertura-97%25-brightgreen)
+![mypy](https://img.shields.io/badge/mypy-0%20erros-success)
+![ruff](https://img.shields.io/badge/ruff-0%20viola%C3%A7%C3%B5es-success)
 ![Dependências externas](https://img.shields.io/badge/depend%C3%AAncias%20externas-zero-informational)
 ![Licença](https://img.shields.io/badge/licen%C3%A7a-MIT-lightgrey)
 
@@ -123,8 +126,11 @@ cd gestao-pecas-qualidade
 # 2. (Opcional, só para rodar os testes) Instale as dependências de dev
 pip install -r requirements.txt
 
-# 3. Execute o sistema
+# 3. Execute o sistema (menu interativo)
 python3 -m pecas_qualidade.main
+
+# 4. Ou rode a demonstração automática (sem digitar nada)
+python3 -m pecas_qualidade.demo
 ```
 
 Se preferir rodar diretamente o arquivo (sem `-m`), também funciona:
@@ -266,40 +272,45 @@ O relatório é **exportado automaticamente** para `relatorio_final.txt` —
 
 ## 🧪 Testes automatizados
 
-O sistema tem **21 testes unitários** (`pytest`) cobrindo casos de borda
-que um trabalho manual dificilmente cobriria — por exemplo, o que
-acontece exatamente na 10ª e na 11ª peça aprovada, ou nos limites exatos
-de 95g/105g/10cm/20cm:
+O sistema tem **51 testes automatizados** (`pytest`) com **cobertura de
+97%** do código, em três famílias:
+
+1. **Unitários** (`test_regras.py`, 10 testes): cada critério de qualidade
+   isolado, incluindo os limites exatos (95g, 105g, 10cm, 20cm) e a
+   normalização de cores digitadas com variação ("AZUL", " verde ",
+   "Vermelho").
+2. **De integração do CLI** (`test_cli.py`, 23 testes): simulam sessões
+   completas de usuário — sequências de teclado reais alimentando o menu,
+   verificando as mensagens impressas. Se o menu quebrar, o teste pega.
+3. **De robustez** (`test_robustez.py`, 18 testes): invariantes de caixa
+   (fechada é imutável), arquivo de estado corrompido, caminho de disco
+   inválido — o sistema continua operando em vez de quebrar.
+
+Cobrindo casos de borda que um trabalho manual dificilmente cobriria — por
+exemplo, o que acontece exatamente na 10ª e na 11ª peça aprovada:
 
 ```bash
 pytest tests/ -v
 ```
 
+```bash
+pytest tests/ -v
+# 51 passed — cobertura: 97,15%
 ```
-tests/test_estoque.py::test_cadastrar_peca_aprovada PASSED
-tests/test_estoque.py::test_cadastrar_peca_reprovada_nao_entra_em_caixa PASSED
-tests/test_estoque.py::test_cadastro_duplicado_levanta_erro PASSED
-tests/test_estoque.py::test_caixa_fecha_automaticamente_ao_atingir_dez_pecas PASSED
-tests/test_estoque.py::test_decima_primeira_peca_aprovada_abre_nova_caixa PASSED
-tests/test_estoque.py::test_remover_peca_reprovada PASSED
-tests/test_estoque.py::test_remover_peca_aprovada_em_caixa_aberta PASSED
-tests/test_estoque.py::test_remover_peca_em_caixa_fechada_e_bloqueado PASSED
-tests/test_estoque.py::test_remover_peca_inexistente_levanta_erro PASSED
-tests/test_estoque.py::test_relatorio_final_totais_corretos PASSED
-tests/test_estoque.py::test_persistencia_recupera_estado PASSED
-tests/test_regras.py::test_peca_perfeita_e_aprovada PASSED
-tests/test_regras.py::test_limites_inferiores_inclusivos PASSED
-tests/test_regras.py::test_limites_superiores_inclusivos PASSED
-tests/test_regras.py::test_peso_abaixo_do_minimo_reprova PASSED
-tests/test_regras.py::test_peso_acima_do_maximo_reprova PASSED
-tests/test_regras.py::test_cor_invalida_reprova PASSED
-tests/test_regras.py::test_comprimento_fora_da_faixa_reprova PASSED
-tests/test_regras.py::test_multiplos_motivos_sao_todos_reportados PASSED
-tests/test_regras.py::test_normalizacao_de_cor_aceita_variacoes PASSED
-tests/test_regras.py::test_normalizacao_de_cor_invalida_levanta_erro PASSED
 
-============================== 21 passed in 0.05s ==============================
+Além dos testes, o repositório tem um **portão de qualidade** que precisa
+estar 100% verde para qualquer contribuição entrar:
+
+```bash
+make qualidade   # ruff (estilo + padrões de bug) → mypy (tipagem) → pytest
 ```
+
+| Porta                        | Ferramenta | Estado  |
+|------------------------------|------------|---------|
+| Estilo e padrões de bug      | `ruff`     | 0 violações |
+| Tipagem estática              | `mypy`     | 0 erros |
+| Testes automatizados          | `pytest`   | 51/51   |
+| Cobertura mínima exigida       | `coverage` | 95% (atual: 97%) |
 
 Um workflow de **Integração Contínua** (`.github/workflows/ci.yml`) roda
 essa suíte automaticamente em Python 3.10, 3.11 e 3.12 a cada `push` —
@@ -396,12 +407,18 @@ gestao-pecas-qualidade/
 │   ├── excecoes.py        # Exceções de domínio
 │   └── persistencia.py    # Salvar/carregar estado em JSON
 ├── tests/
-│   ├── test_estoque.py    # 11 testes do núcleo de negócio
-│   └── test_regras.py     # 10 testes das regras de qualidade
+│   ├── test_regras.py     # 10 testes — critérios de qualidade isolados
+│   ├── test_estoque.py     # 11 testes — núcleo de negócio (caixas, remoção, relatório)
+│   ├── test_cli.py         # 23 testes — sessões completas de usuário simuladas
+│   └── test_robustez.py    # 18 testes — invariantes, corrompimentos, caminhos de erro
 ├── .github/workflows/
-│   └── ci.yml              # Integração contínua (pytest em 3 versões do Python)
+│   └── ci.yml              # Portão de qualidade: ruff → mypy → pytest (3 versões de Python)
+├── pecas_qualidade/demo.py # Demonstração automática (cenario completo sem digitação)
 ├── RELATORIO_TECNICO.md    # Parte teórica exigida pelo desafio (Análise e Discussão)
 ├── VIDEO_PITCH_SCRIPT.md   # Roteiro do vídeo pitch (até 4 minutos)
+├── CHANGELOG.md            # Histórico de versões (Keep a Changelog)
+├── Makefile                # make qualidade / make testes / make demo
+├── pyproject.toml          # Configuração padrão da comunidade (ruff, mypy, pytest, coverage)
 ├── requirements.txt
 ├── .gitignore
 ├── LICENSE

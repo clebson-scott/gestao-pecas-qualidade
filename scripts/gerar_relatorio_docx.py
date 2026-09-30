@@ -6,12 +6,13 @@ Não é markdown->docx genérico: o conteúdo é escrito diretamente aqui para
 garantir formatação limpa (fonte, espaçamento, tabelas) sem depender de
 conversores externos (pandoc não está disponível no ambiente de execução).
 """
+
 from docx import Document
-from docx.shared import Pt, Cm, RGBColor
-from docx.enum.text import WD_ALIGN_PARAGRAPH
 from docx.enum.table import WD_TABLE_ALIGNMENT
-from docx.oxml.ns import qn
+from docx.enum.text import WD_ALIGN_PARAGRAPH
 from docx.oxml import OxmlElement
+from docx.oxml.ns import qn
+from docx.shared import Cm, Pt, RGBColor
 
 AZUL_UNIFECAF = RGBColor(0x0B, 0x3C, 0x8A)
 CINZA = RGBColor(0x44, 0x44, 0x44)
@@ -160,7 +161,7 @@ doc.add_paragraph(
 doc.add_paragraph(
     "1. Inconsistência de julgamento. Um operador humano, ao longo de um turno de "
     "oito horas, sofre fadiga visual e cognitiva. A régua e a balança não erram, "
-    "mas a leitura e a decisão (\"está dentro do critério?\") sim. Um sistema "
+    'mas a leitura e a decisão ("está dentro do critério?") sim. Um sistema '
     "automatizado aplica exatamente o mesmo critério, na milésima peça e na "
     "primeira, sem variação.",
     style="List Number",
@@ -192,7 +193,7 @@ doc.add_heading("1.2 O problema em termos de engenharia de software", level=2)
 doc.add_paragraph(
     "Reduzido à sua essência lógica, o desafio pede três coisas encadeadas: uma "
     "função de classificação com múltiplos critérios (peso, cor, comprimento) "
-    "que decide \"aprovada\" ou \"reprovada\" e explica o motivo; uma estrutura "
+    'que decide "aprovada" ou "reprovada" e explica o motivo; uma estrutura '
     "de agrupamento com capacidade limitada e fechamento automático (as caixas "
     "de 10 peças); e uma camada de agregação/relatório sobre os dados "
     "acumulados nos dois pontos anteriores. Essa decomposição — avaliação, "
@@ -222,8 +223,16 @@ tabela_simples(
     [
         ("models.py", "Estruturas de dados (Peça, Caixa, Enums)", "Novo atributo de peça exigido"),
         ("regras.py", "Critérios de aprovação/reprovação", "Fábrica muda a faixa de peso aceita"),
-        ("estoque.py", "Orquestração (cadastro, remoção, relatório)", "Regra de fechamento de caixa muda"),
-        ("persistencia.py", "Salvar/carregar estado em disco", "Formato de armazenamento muda (ex.: banco de dados)"),
+        (
+            "estoque.py",
+            "Orquestração (cadastro, remoção, relatório)",
+            "Regra de fechamento de caixa muda",
+        ),
+        (
+            "persistencia.py",
+            "Salvar/carregar estado em disco",
+            "Formato de armazenamento muda (ex.: banco de dados)",
+        ),
         ("main.py", "Interface de terminal (menu)", "Forma de interação com o usuário muda"),
     ],
 )
@@ -267,7 +276,7 @@ doc.add_paragraph(
     "Cada regra de qualidade é isolada em sua própria função pura — "
     "avaliar_peso, avaliar_cor, avaliar_comprimento — que recebe um valor e "
     "devolve None (aprovado) ou uma string explicando o motivo da reprovação. "
-    "\"Pura\" aqui significa: a função não lê nem modifica nenhum estado "
+    '"Pura" aqui significa: a função não lê nem modifica nenhum estado '
     "externo, e sempre devolve o mesmo resultado para a mesma entrada. Essa "
     "propriedade é o que torna essas funções triviais de testar isoladamente e "
     "o que permite reaproveitá-las em qualquer contexto futuro — um endpoint de "
@@ -276,16 +285,16 @@ doc.add_paragraph(
 
 doc.add_heading("2.4 Condições e repetição no fluxo de armazenamento", level=2)
 doc.add_paragraph(
-    "O laço lógico \"adicionar peça → caixa cheia? → fechar e abrir nova\" é "
+    'O laço lógico "adicionar peça → caixa cheia? → fechar e abrir nova" é '
     "implementado sem nenhum loop explícito de repetição — cada chamada a "
     "cadastrar_peca() processa exatamente uma peça, e é o próprio menu em "
     "main.py que fornece a repetição, através de um laço while True: que "
     "mantém o sistema respondendo a comandos até o operador escolher "
-    "\"0. Sair\"."
+    '"0. Sair".'
 )
 doc.add_paragraph(
-    "Essa separação entre \"a regra de armazenamento\" (sem loop, uma peça por "
-    "chamada) e \"a repetição da interação com o usuário\" (loop do menu) é "
+    'Essa separação entre "a regra de armazenamento" (sem loop, uma peça por '
+    'chamada) e "a repetição da interação com o usuário" (loop do menu) é '
     "outra aplicação do mesmo princípio de responsabilidade única: a lógica de "
     "armazenamento não sabe nem precisa saber que está sendo chamada dentro de "
     "um menu interativo."
@@ -306,22 +315,32 @@ doc.add_paragraph(
 # ============================== 3. BENEFÍCIOS ==============================
 doc.add_heading("3. Benefícios percebidos na solução", level=1)
 beneficios = [
-    ("Consistência absoluta de julgamento",
-     "Uma peça de 105.0g é sempre aprovada; uma de 105.1g é sempre reprovada. "
-     "Não há variação entre operadores, turnos ou dias."),
-    ("Rastreabilidade completa",
-     "Cada peça carrega o motivo exato da sua reprovação e a caixa exata onde "
-     "foi armazenada, se aprovada — persistindo entre execuções do programa."),
-    ("Feedback imediato e completo",
-     "O operador sabe, no instante do cadastro, se a peça foi aprovada e por "
-     "quê — sem esperar um relatório de fim de turno."),
-    ("Auditabilidade do lote",
-     "A imutabilidade das caixas fechadas garante que, uma vez lacrado um lote "
-     "de 10 peças, seu conteúdo nunca muda silenciosamente."),
-    ("Confiabilidade comprovada por testes",
-     "21 testes automatizados travam o comportamento esperado em casos de "
-     "borda — qualquer alteração futura que quebre uma regra é detectada "
-     "instantaneamente."),
+    (
+        "Consistência absoluta de julgamento",
+        "Uma peça de 105.0g é sempre aprovada; uma de 105.1g é sempre reprovada. "
+        "Não há variação entre operadores, turnos ou dias.",
+    ),
+    (
+        "Rastreabilidade completa",
+        "Cada peça carrega o motivo exato da sua reprovação e a caixa exata onde "
+        "foi armazenada, se aprovada — persistindo entre execuções do programa.",
+    ),
+    (
+        "Feedback imediato e completo",
+        "O operador sabe, no instante do cadastro, se a peça foi aprovada e por "
+        "quê — sem esperar um relatório de fim de turno.",
+    ),
+    (
+        "Auditabilidade do lote",
+        "A imutabilidade das caixas fechadas garante que, uma vez lacrado um lote "
+        "de 10 peças, seu conteúdo nunca muda silenciosamente.",
+    ),
+    (
+        "Confiabilidade comprovada por testes",
+        "21 testes automatizados travam o comportamento esperado em casos de "
+        "borda — qualquer alteração futura que quebre uma regra é detectada "
+        "instantaneamente.",
+    ),
 ]
 for titulo_b, texto_b in beneficios:
     p = doc.add_paragraph(style="List Bullet")
@@ -332,21 +351,29 @@ for titulo_b, texto_b in beneficios:
 # ============================== 4. DESAFIOS ==============================
 doc.add_heading("4. Desafios enfrentados no desenvolvimento", level=1)
 desafios = [
-    ("Limites das faixas (inclusivo vs. exclusivo)",
-     "O enunciado diz \"peso entre 95g e 105g\" sem especificar se os limites "
-     "exatos são aprovados. Adotamos a leitura inclusiva, documentada "
-     "explicitamente no código e neste relatório, em vez de resolvida "
-     "silenciosamente."),
-    ("Remoção de peça em caixa já fechada",
-     "Decidimos que caixas fechadas são imutáveis — espelhando a prática real "
-     "de lotes lacrados — e implementamos essa restrição como uma exceção de "
-     "domínio explícita (RemocaoBloqueadaError)."),
-    ("Erro de \"off-by-one\" no limite de 10 peças",
-     "Clássico risco em lógica de agrupamento por capacidade. Validado por "
-     "testes automatizados dedicados exatamente à 10ª e à 11ª peça."),
-    ("Robustez na leitura de entrada do terminal",
-     "A função ler_float() trata vírgula decimal e repete a pergunta em caso "
-     "de entrada inválida, sem exigir do operador conhecimento de formatação."),
+    (
+        "Limites das faixas (inclusivo vs. exclusivo)",
+        'O enunciado diz "peso entre 95g e 105g" sem especificar se os limites '
+        "exatos são aprovados. Adotamos a leitura inclusiva, documentada "
+        "explicitamente no código e neste relatório, em vez de resolvida "
+        "silenciosamente.",
+    ),
+    (
+        "Remoção de peça em caixa já fechada",
+        "Decidimos que caixas fechadas são imutáveis — espelhando a prática real "
+        "de lotes lacrados — e implementamos essa restrição como uma exceção de "
+        "domínio explícita (RemocaoBloqueadaError).",
+    ),
+    (
+        'Erro de "off-by-one" no limite de 10 peças',
+        "Clássico risco em lógica de agrupamento por capacidade. Validado por "
+        "testes automatizados dedicados exatamente à 10ª e à 11ª peça.",
+    ),
+    (
+        "Robustez na leitura de entrada do terminal",
+        "A função ler_float() trata vírgula decimal e repete a pergunta em caso "
+        "de entrada inválida, sem exigir do operador conhecimento de formatação.",
+    ),
 ]
 for titulo_d, texto_d in desafios:
     p = doc.add_paragraph(style="List Number")
@@ -380,14 +407,14 @@ doc.add_paragraph(
     "seguinte é aplicar um modelo estatístico ou de machine learning sobre "
     "esse histórico para detectar padrões antes que se tornem problemas "
     "visíveis — por exemplo, se o percentual de peças reprovadas por "
-    "\"comprimento fora da faixa\" começa a subir de forma consistente ao "
+    '"comprimento fora da faixa" começa a subir de forma consistente ao '
     "longo de um turno, isso pode indicar desgaste de uma ferramenta de corte "
     "muito antes que o problema afete um lote inteiro."
 )
 
 doc.add_heading("Integração industrial (MES/ERP e atuação física)", level=3)
 doc.add_paragraph(
-    "Num cenário real, a decisão \"reprovada\" deveria acionar um atuador "
+    'Num cenário real, a decisão "reprovada" deveria acionar um atuador '
     "físico (ex.: um desvio pneumático na esteira) que remove automaticamente "
     "a peça defeituosa da linha principal, e o sistema deveria se comunicar "
     "com um MES/ERP da fábrica para que volume de produção, refugo e "
@@ -396,8 +423,8 @@ doc.add_paragraph(
 
 doc.add_paragraph(
     "O ponto que sustenta toda essa reflexão é arquitetural: como o código já "
-    "separa claramente \"como os dados chegam\", \"o que é decidido\" e "
-    "\"onde os dados vão\", cada uma dessas evoluções — sensores, IA, "
+    'separa claramente "como os dados chegam", "o que é decidido" e '
+    '"onde os dados vão", cada uma dessas evoluções — sensores, IA, '
     "integração industrial — substitui apenas as bordas do sistema. A lógica "
     "de decisão que hoje aprova ou reprova uma peça, e que hoje fecha uma caixa "
     "ao atingir 10 unidades, permaneceria idêntica e já validada por 21 testes "

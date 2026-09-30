@@ -59,8 +59,7 @@ def avaliar_peso(peso: float) -> str | None:
     """
     if peso < PESO_MINIMO_G or peso > PESO_MAXIMO_G:
         return (
-            f"peso {peso:.1f}g fora da faixa aceita "
-            f"[{PESO_MINIMO_G:.0f}g – {PESO_MAXIMO_G:.0f}g]"
+            f"peso {peso:.1f}g fora da faixa aceita [{PESO_MINIMO_G:.0f}g – {PESO_MAXIMO_G:.0f}g]"
         )
     return None
 

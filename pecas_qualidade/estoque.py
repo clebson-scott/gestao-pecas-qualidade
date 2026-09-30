@@ -24,7 +24,8 @@ from __future__ import annotations
 
 import logging
 from collections import Counter
-from dataclasses import dataclass, field
+from dataclasses import dataclass
+from pathlib import Path
 
 from .excecoes import PecaDuplicadaError, PecaNaoEncontradaError, RemocaoBloqueadaError
 from .models import Caixa, CorPeca, Peca, StatusPeca
@@ -95,7 +96,9 @@ class GerenciadorProducao:
             automaticamente salva em disco via ``persistencia.py``.
     """
 
-    def __init__(self, persistir: bool = True, arquivo_estado=ARQUIVO_ESTADO_PADRAO) -> None:
+    def __init__(
+        self, persistir: bool = True, arquivo_estado: Path = ARQUIVO_ESTADO_PADRAO
+    ) -> None:
         self.pecas: dict[str, Peca] = {}
         self.caixas: list[Caixa] = []
         self._proximo_id_caixa: int = 1
@@ -108,7 +111,9 @@ class GerenciadorProducao:
     # ------------------------------------------------------------------ #
     # 1. Cadastro
     # ------------------------------------------------------------------ #
-    def cadastrar_peca(self, id_peca: str, peso: float, cor: str | CorPeca, comprimento: float) -> Peca:
+    def cadastrar_peca(
+        self, id_peca: str, peso: float, cor: str | CorPeca, comprimento: float
+    ) -> Peca:
         """Cadastra uma nova peça, avalia sua qualidade e a armazena.
 
         Args:
