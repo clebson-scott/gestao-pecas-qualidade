@@ -1,0 +1,10 @@
+__pycache__/
+*.pyc
+.pytest_cache/
+pecas_qualidade/estado_producao.json
+pecas_qualidade/estado_producao_demo.json
+pecas_qualidade/relatorio_final.txt
+pecas_qualidade/pecas.log
+.venv/
+venv/
+*.egg-info/
